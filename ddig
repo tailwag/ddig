@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# Essex Wolf | 2016 
+# ddig v1.4  | 2018-11-14
+
+SITE=$(echo $1 | sed 's:https\?\:\/\/::g;s:\/::g')
+NASS=$2
+IFS="\`"
+
+GERP=$(echo ${SITE} | grep -Eo "([1-2]?[0-9]{1,2}\.){3}[1-2]?[0-9]{1,2}")
+if [[ "x${GERP}" == "x" ]]; then 
+	RAD=$(dig +short "${SITE}" | grep -Eo "([1-2]?[0-9]{1,2}\.){3}[1-2]?[0-9]{1,2}")
+else 
+	RAD=$SITE
+fi
+for type in {A,AAAA,NS,CNAME,rDNS,MX,TXT}; do 
+	if [[ "${type}" == "rDNS" ]]; then 
+		DIG=$(dig +short -x ${NASS} ${RAD})
+	else 
+		DIG=$(dig +short ${type} ${NASS} ${SITE})
+	fi
+	COUNT=1
+	for i in $(echo ${DIG} | sed ':a;N;$!ba;s/\n/\`/g'); do 
+		if [[ ${COUNT} == 1 ]]; then 
+			printf "%-7s:%2s\n" "${type}" "  ${i}"
+		else 
+			printf "%-7s:%2s\n" " " "  ${i}"
+		fi
+		((COUNT++))
+	done 
+	if [[ ${COUNT} -gt 1 ]]; then printf "\n"; fi
+done
