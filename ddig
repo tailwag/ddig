@@ -3,7 +3,7 @@
 # Essex Wolf | 2016 
 # ddig v1.4  | 2018-11-14
 
-SITE=$(echo $1 | sed 's:https\?\:\/\/::g;s:\/::g')
+SITE=$(echo $1 | sed 's:https\?\:\/\/::g' | awk -F "/" '{print $1}')
 NASS=$2
 IFS="\`"
 
