@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Essex Wolf | 2016 
-# ddig v1.4  | 2018-11-14
+# ddig v1.4.2  | 2019-02-28
 
-SITE=$(echo $1 | sed 's:https\?\:\/\/::g' | awk -F "/" '{print $1}')
+SITE=$(echo $1 | sed 's|https\?://||g' | awk -F "/" '{print $1}')
 NASS=$2
 IFS="\`"
 
@@ -15,18 +15,14 @@ else
 fi
 for type in {A,AAAA,NS,CNAME,rDNS,MX,TXT}; do 
 	if [[ "${type}" == "rDNS" ]]; then 
-		DIG=$(dig +short -x ${NASS} ${RAD})
+		DIG=$(dig +short -x ${NASS} ${RAD} 2> /dev/null)
 	else 
-		DIG=$(dig +short ${type} ${NASS} ${SITE})
+		DIG=$(dig +short ${type} ${NASS} ${SITE} 2> /dev/null)
 	fi
 	COUNT=1
 	for i in $(echo ${DIG} | sed ':a;N;$!ba;s/\n/\`/g'); do 
-		if [[ ${COUNT} == 1 ]]; then 
-			printf "%-7s:%2s\n" "${type}" "  ${i}"
-		else 
-			printf "%-7s:%2s\n" " " "  ${i}"
-		fi
-		((COUNT++))
+		printf "%-7s:%2s\n" "${type}" "  ${i}"
+		type=""
 	done 
-	if [[ ${COUNT} -gt 1 ]]; then printf "\n"; fi
+	if [[ "x${DIG}" != "x" ]]; then printf "\n"; fi
 done
