@@ -2,6 +2,7 @@
 
 # Essex Wolf | 2016 
 # ddig v1.4.2  | 2019-02-28
+# https://github.com/tailwag/ddig.git
 
 SITE=$(echo $1 | sed 's|https\?://||g' | awk -F "/" '{print $1}')
 NASS=$2
