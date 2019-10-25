@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Essex Wolf | 2016 
-# ddig v1.4.2  | 2019-02-28
+# ddig v1.5.0  | 2019-10-24
 # https://github.com/tailwag/ddig
 
 SITE=$(echo $1 | sed 's|https\?://||g' | awk -F "/" '{print $1}')
@@ -14,7 +14,7 @@ if [[ "x${GERP}" == "x" ]]; then
 else 
 	RAD=$SITE
 fi
-for type in {A,AAAA,NS,CNAME,rDNS,MX,TXT}; do 
+for type in {A,AAAA,NS,CNAME,rDNS,SOA,MX,TXT}; do 
 	if [[ "${type}" == "rDNS" ]]; then 
 		DIG=$(dig +short -x ${NASS} ${RAD} 2> /dev/null)
 	else 
